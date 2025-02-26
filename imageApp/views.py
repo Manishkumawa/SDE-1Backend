@@ -15,6 +15,13 @@ def upload_csv(request):
     if request.method == "POST" and request.FILES.get("file"):
         file = request.FILES["file"]
 
+        if not file.name.endswith(".csv"):
+            return JsonResponse({"error": "Invalid file format. Only CSV files are allowed."}, status=400)
+
+        if file.content_type not in ["text/csv", "application/vnd.ms-excel"]:
+            return JsonResponse({"error": "Invalid MIME type. Please upload a valid CSV file."}, status=400)
+
+
         
         processing_request = ImageProcessingRequest.objects.create(status="pending")
 
